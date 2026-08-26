@@ -1,1 +1,968 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Für dich 💕 – dein kleines Reh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#ffd9ec;
+    --sky-mid:#ffeaf5;
+    --meadow:#ffc7de;
+    --fawn:#e8b08a;
+    --fawn-dark:#d99a70;
+    --fawn-belly:#fff3e4;
+    --berry:#ff4f93;
+    --berry-dark:#e83a80;
+    --plum:#7a3b63;
+    --plum-soft:#a9678f;
+    --lilac:#c79eea;
+    --lilac-dark:#a674d1;
+    --gold:#ffce54;
+    --card:#fff8fb;
+    --line:#ffd3e8;
+    --shadow: 0 14px 34px rgba(216,64,132,.22);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; height:100%;}
+  body{
+    font-family:'Quicksand', sans-serif;
+    color:var(--plum);
+    background:
+      radial-gradient(circle at 15% 8%, #fff 0%, transparent 40%),
+      linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 55%, #f6e4ff 100%);
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:24px 14px 48px;
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3, .display{ font-family:'Fredoka', sans-serif; }
 
+  /* ambient floating decor */
+  #bgDecor{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:0; }
+  .floaty{
+    position:absolute; bottom:-40px; font-size:20px; opacity:.55;
+    animation-name:floatUp; animation-timing-function:ease-in; animation-iteration-count:infinite;
+    filter:drop-shadow(0 2px 3px rgba(255,255,255,.6));
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0) rotate(0deg); opacity:0; }
+    10%{ opacity:.6; }
+    90%{ opacity:.5; }
+    100%{ transform:translateY(-110vh) rotate(25deg); opacity:0; }
+  }
+
+  .phone{
+    position:relative; z-index:1;
+    width:100%; max-width:420px;
+    background:var(--card);
+    border-radius:34px;
+    box-shadow:var(--shadow);
+    border:1px solid #ffffff;
+    overflow:hidden;
+    min-height:680px;
+  }
+
+  .screen{ display:flex; flex-direction:column; min-height:680px; }
+  .hidden{ display:none !important; }
+
+  /* ---------- Onboarding ---------- */
+  #onboardingScreen{
+    align-items:center; justify-content:center; text-align:center;
+    padding:36px 28px; gap:14px;
+    background:
+      radial-gradient(circle at 50% 0%, #fff 0%, transparent 55%),
+      linear-gradient(180deg, var(--sky-mid), #ffffff 70%);
+  }
+  .onboarding-emoji{ font-size:64px; margin-bottom:2px; animation:idleBounce 2.6s ease-in-out infinite; }
+  #onboardingScreen h1{ font-size:24px; margin:0; color:var(--berry-dark); line-height:1.3; }
+  #onboardingScreen p{ margin:2px 0 4px; color:var(--plum-soft); font-size:15px; line-height:1.5; }
+  #petNameInput{
+    width:100%; max-width:260px; padding:13px 18px; border-radius:999px;
+    border:2px solid var(--line); font-family:'Quicksand'; font-weight:600; font-size:16px;
+    text-align:center; color:var(--plum); background:#fff; outline:none;
+    transition:border-color .2s;
+  }
+  #petNameInput:focus{ border-color:var(--berry); }
+  .primary-btn{
+    font-family:'Fredoka'; font-weight:600; font-size:16px; color:#fff;
+    background:linear-gradient(180deg, var(--berry), var(--berry-dark));
+    border:none; padding:14px 32px; border-radius:999px; cursor:pointer;
+    box-shadow:0 8px 18px rgba(255,79,147,.4);
+    transition:transform .12s ease;
+    margin-top:6px;
+  }
+  .primary-btn:active{ transform:scale(.94); }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 16px 8px;
+  }
+  .pill{
+    display:flex; align-items:center; gap:6px;
+    background:#fff; border:1px solid var(--line); border-radius:999px;
+    padding:6px 12px; font-weight:700; font-size:14px; color:var(--plum);
+    box-shadow:0 3px 8px rgba(216,64,132,.08);
+  }
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%; border:none; cursor:pointer;
+    background:#fff; box-shadow:0 3px 8px rgba(216,64,132,.12);
+    font-size:18px; display:flex; align-items:center; justify-content:center;
+    transition:transform .12s ease;
+  }
+  .icon-btn:active{ transform:scale(.9); }
+
+  /* ---------- Stage ---------- */
+  .stage{
+    position:relative; flex:1; display:flex; align-items:flex-end; justify-content:center;
+    padding-top:6px;
+    min-height:250px;
+  }
+  .stage-ground{
+    position:absolute; bottom:0; left:0; right:0; height:120px;
+    background:radial-gradient(ellipse at 50% 100%, var(--meadow) 0%, transparent 70%);
+  }
+  .speech-bubble{
+    position:absolute; top:6px; left:50%; transform:translateX(-50%);
+    background:#fff; border:2px solid var(--line); border-radius:18px;
+    padding:9px 16px; font-weight:600; font-size:13.5px; color:var(--plum);
+    max-width:250px; text-align:center; box-shadow:0 6px 14px rgba(216,64,132,.15);
+    z-index:5; opacity:0; transition:opacity .25s ease, transform .25s ease;
+  }
+  .speech-bubble.show{ opacity:1; }
+  .speech-bubble:after{
+    content:''; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%);
+    border-width:8px 7px 0 7px; border-style:solid; border-color:#fff transparent transparent transparent;
+  }
+  #deerWrap{ position:relative; width:230px; z-index:2; }
+  #deerSvg{ width:100%; height:auto; display:block; animation:idleBounce 3.2s ease-in-out infinite; transform-origin:50% 90%; }
+  #deerSvg.tap-squish{ animation:squish .35s ease; }
+  @keyframes idleBounce{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-7px);} }
+  @keyframes squish{ 0%{transform:scale(1,1);} 35%{transform:scale(1.12,.86);} 65%{transform:scale(.94,1.08);} 100%{transform:scale(1,1);} }
+  @keyframes jump{ 0%,100%{transform:translateY(0) scale(1,1);} 30%{transform:translateY(-26px) scale(.96,1.06);} 55%{transform:translateY(-26px) scale(1.05,.95);} 100%{transform:translateY(0) scale(1,1);} }
+  #deerSvg.jump{ animation:jump .6s ease; }
+
+  .eye{ transform-box:fill-box; transform-origin:center; animation:blink 5.2s infinite; }
+  .eye.eye2{ animation-delay:.05s; }
+  @keyframes blink{ 0%,90%,100%{ transform:scaleY(1);} 94%{ transform:scaleY(.08);} }
+  #eyesOpen.sleeping{ display:none; }
+  #eyesClosed{ display:none; }
+  #eyesClosed.sleeping{ display:block; }
+
+  .dirt-layer{ position:absolute; inset:0; z-index:3; pointer-events:none; }
+  .dirt-spot{
+    position:absolute; width:22px; height:22px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #b98457, #8a5a35);
+    box-shadow:inset 0 -2px 3px rgba(0,0,0,.25);
+    cursor:pointer; pointer-events:all;
+    transition:transform .18s ease, opacity .18s ease;
+  }
+  .dirt-spot:active{ transform:scale(.85); }
+  .dirt-spot.gone{ transform:scale(0); opacity:0; }
+
+  .heart-pop{
+    position:absolute; pointer-events:none; font-size:20px; z-index:6;
+    animation:heartUp 1.1s ease-out forwards;
+  }
+  @keyframes heartUp{
+    0%{ transform:translateY(0) scale(.6); opacity:0; }
+    15%{ opacity:1; transform:translateY(-6px) scale(1); }
+    100%{ transform:translateY(-70px) scale(1.1); opacity:0; }
+  }
+  .float-text{
+    position:absolute; pointer-events:none; font-weight:700; font-size:15px; z-index:6;
+    color:var(--berry-dark); animation:floatText 1s ease-out forwards;
+  }
+  @keyframes floatText{
+    0%{ transform:translateY(0); opacity:0; }
+    20%{ opacity:1; }
+    100%{ transform:translateY(-46px); opacity:0; }
+  }
+
+  /* ---------- Stats ---------- */
+  .stats{ padding:6px 20px 4px; display:flex; flex-direction:column; gap:9px; }
+  .stat-row{ display:flex; align-items:center; gap:10px; }
+  .stat-icon{ font-size:16px; width:20px; text-align:center; }
+  .bar{ flex:1; height:12px; background:#ffe3ef; border-radius:999px; overflow:hidden; box-shadow:inset 0 1px 3px rgba(216,64,132,.18); }
+  .bar-fill{ height:100%; border-radius:999px; transition:width .7s ease; width:80%; }
+  .bar-fill.hunger{ background:linear-gradient(90deg,#ff9fc4,var(--berry)); }
+  .bar-fill.happiness{ background:linear-gradient(90deg,#ffd27a,var(--gold)); }
+  .bar-fill.energy{ background:linear-gradient(90deg,#a9d8ff,#6fb6ff); }
+  .bar-fill.clean{ background:linear-gradient(90deg,#b8f0d0,#5fd39a); }
+
+  /* ---------- Nav ---------- */
+  .nav{
+    display:grid; grid-template-columns:repeat(6,1fr); gap:6px;
+    padding:12px 10px 16px; margin-top:4px;
+    background:linear-gradient(180deg, transparent, #ffeaf5 40%);
+  }
+  .nav-btn{
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    background:#fff; border:1px solid var(--line); border-radius:16px;
+    padding:8px 2px 7px; cursor:pointer; font-family:'Quicksand'; font-weight:700;
+    font-size:10px; color:var(--plum); box-shadow:0 4px 10px rgba(216,64,132,.1);
+    transition:transform .12s ease;
+  }
+  .nav-btn span{ font-size:9.5px; }
+  .nav-btn:active{ transform:scale(.9); }
+  .nav-btn .emoji{ font-size:19px; }
+  .nav-btn.hug{ background:linear-gradient(180deg,#fff,#ffe3f0); border-color:var(--berry); }
+
+  /* ---------- Overlays ---------- */
+  .overlay{
+    position:absolute; inset:0; z-index:20; display:flex; flex-direction:column;
+    background:rgba(122,59,99,.28); backdrop-filter:blur(2px);
+    padding:18px; animation:fadeIn .18s ease;
+  }
+  @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+  .sheet{
+    margin-top:auto; background:var(--card); border-radius:26px 26px 0 0;
+    padding:20px 20px 24px; box-shadow:0 -10px 30px rgba(122,59,99,.3);
+    max-height:88%; overflow-y:auto;
+  }
+  .sheet-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .sheet-header h2{ font-size:18px; margin:0; color:var(--berry-dark); }
+  .close-x{
+    width:32px; height:32px; border-radius:50%; border:none; background:#ffe3ef;
+    color:var(--plum); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  }
+  .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .item-card{
+    background:#fff; border:2px solid var(--line); border-radius:18px; padding:12px 8px;
+    display:flex; flex-direction:column; align-items:center; gap:5px; cursor:pointer;
+    transition:transform .12s ease, border-color .15s ease;
+  }
+  .item-card:active{ transform:scale(.95); }
+  .item-card .em{ font-size:30px; }
+  .item-card .nm{ font-weight:700; font-size:12.5px; text-align:center; }
+  .item-card .sub{ font-size:11px; color:var(--plum-soft); }
+  .item-card.equipped{ border-color:var(--berry); background:#fff3f8; }
+  .mini-btn{
+    font-family:'Fredoka'; font-weight:600; font-size:12px; color:#fff; border:none;
+    padding:6px 14px; border-radius:999px; cursor:pointer;
+    background:linear-gradient(180deg, var(--berry), var(--berry-dark));
+  }
+  .mini-btn.locked{ background:#d8c3d0; cursor:default; }
+  .mini-btn.ghost{ background:#fff; color:var(--berry-dark); border:1.5px solid var(--berry); }
+
+  /* Play minigame */
+  #playArea{
+    position:relative; flex:1; background:linear-gradient(180deg,#ffe0f0,#fff5fa);
+    border-radius:22px; overflow:hidden; margin-bottom:12px;
+  }
+  .fall-item{ position:absolute; top:-30px; font-size:26px; cursor:pointer; user-select:none; }
+  .fall-item.caught{ animation:caughtPop .3s ease forwards; }
+  @keyframes caughtPop{ to{ transform:scale(1.7); opacity:0; } }
+  .game-hud{ display:flex; justify-content:space-between; padding:2px 6px 10px; font-weight:700; font-size:13px; color:var(--plum); }
+  #playResult{ text-align:center; padding:20px 10px 6px; }
+  #playResult .big{ font-size:40px; }
+
+  /* sleep overlay */
+  #sleepOverlay{ background:rgba(40,26,58,.72); align-items:center; justify-content:center; }
+  .sleep-box{ text-align:center; color:#fff; }
+  .sleep-box .moon{ font-size:52px; display:block; margin-bottom:10px; animation:idleBounce 3s ease-in-out infinite; }
+  .zzz{ font-size:24px; font-weight:700; opacity:.9; }
+  .stars-twinkle{ font-size:16px; letter-spacing:14px; margin-top:10px; opacity:.8; }
+
+  /* letter overlay */
+  #letterOverlay .sheet{ margin:auto; border-radius:26px; }
+  #letterText{ white-space:pre-line; line-height:1.6; font-size:14.5px; color:var(--plum); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="bgDecor"></div>
+
+<div class="phone">
+
+  <!-- Onboarding -->
+  <div class="screen" id="onboardingScreen">
+    <div class="onboarding-emoji">🦌</div>
+    <h1>Ein kleines Reh<br>für dich 💗</h1>
+    <p>Ich hab dir hier ein kleines Rehkitz gebastelt, das dir ein bisschen Gesellschaft leisten soll. Du kannst es füttern, mit ihm spielen, es sauber machen und knuddeln.</p>
+    <p style="margin-top:10px;"><strong>Wie soll dein Reh heißen?</strong></p>
+    <input type="text" id="petNameInput" placeholder="z. B. Fienchen" maxlength="16">
+    <button class="primary-btn" id="startBtn">Los geht's ✨</button>
+  </div>
+
+  <!-- Game -->
+  <div class="screen hidden" id="gameScreen">
+    <div class="topbar">
+      <button class="icon-btn" id="letterBtn" title="Ein Brief für dich">💌</button>
+      <div class="pill">🪙 <span id="coinCount">15</span></div>
+      <div class="pill">✨ Lvl <span id="levelCount">1</span></div>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="stage-ground"></div>
+      <div class="speech-bubble" id="speechBubble"></div>
+      <div class="dirt-layer" id="dirtLayer"></div>
+
+      <div id="deerWrap">
+        <svg id="deerSvg" viewBox="0 0 300 260" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="150" cy="238" rx="66" ry="10" fill="rgba(122,59,99,0.13)"/>
+
+          <!-- legs -->
+          <rect x="112" y="182" width="13" height="46" rx="6.5" fill="var(--fawn-dark)"/>
+          <rect x="175" y="182" width="13" height="46" rx="6.5" fill="var(--fawn-dark)"/>
+          <rect x="126" y="186" width="13" height="48" rx="6.5" fill="var(--fawn)"/>
+          <rect x="161" y="186" width="13" height="48" rx="6.5" fill="var(--fawn)"/>
+          <ellipse cx="118.5" cy="229" rx="8" ry="4" fill="#7a4a3a"/>
+          <ellipse cx="181.5" cy="229" rx="8" ry="4" fill="#7a4a3a"/>
+          <ellipse cx="132.5" cy="235" rx="8" ry="4" fill="#7a4a3a"/>
+          <ellipse cx="167.5" cy="235" rx="8" ry="4" fill="#7a4a3a"/>
+
+          <!-- tail -->
+          <ellipse cx="211" cy="150" rx="10" ry="8" fill="#fff3e4"/>
+
+          <!-- body -->
+          <ellipse cx="150" cy="163" rx="74" ry="53" fill="var(--fawn)"/>
+          <ellipse cx="150" cy="188" rx="46" ry="28" fill="var(--fawn-belly)"/>
+
+          <!-- spots -->
+          <circle cx="118" cy="128" r="6" fill="#fff8f0" opacity="0.85"/>
+          <circle cx="146" cy="112" r="5.5" fill="#fff8f0" opacity="0.85"/>
+          <circle cx="176" cy="130" r="6" fill="#fff8f0" opacity="0.85"/>
+          <circle cx="191" cy="152" r="5" fill="#fff8f0" opacity="0.8"/>
+          <circle cx="108" cy="150" r="5" fill="#fff8f0" opacity="0.8"/>
+
+          <!-- ears -->
+          <g>
+            <ellipse cx="103" cy="58" rx="17" ry="28" fill="var(--fawn)" transform="rotate(-28 103 58)"/>
+            <ellipse cx="103" cy="58" rx="8" ry="17" fill="#ffd7e6" transform="rotate(-28 103 58)"/>
+            <ellipse cx="197" cy="58" rx="17" ry="28" fill="var(--fawn)" transform="rotate(28 197 58)"/>
+            <ellipse cx="197" cy="58" rx="8" ry="17" fill="#ffd7e6" transform="rotate(28 197 58)"/>
+          </g>
+
+          <!-- head -->
+          <ellipse cx="150" cy="98" rx="54" ry="49" fill="var(--fawn)"/>
+          <ellipse cx="150" cy="118" rx="34" ry="24" fill="var(--fawn-belly)" opacity="0.6"/>
+
+          <!-- headwear accessories (toggled via JS) -->
+          <g id="acc-bow-pink" class="accessory">
+            <circle cx="150" cy="44" r="7" fill="#ff8fc7"/>
+            <path d="M150,44 L128,32 Q120,44 128,56 Z" fill="#ff6fae"/>
+            <path d="M150,44 L172,32 Q180,44 172,56 Z" fill="#ff6fae"/>
+          </g>
+          <g id="acc-bow-purple" class="accessory" style="display:none">
+            <circle cx="150" cy="44" r="7" fill="#c79eea"/>
+            <path d="M150,44 L128,32 Q120,44 128,56 Z" fill="#a674d1"/>
+            <path d="M150,44 L172,32 Q180,44 172,56 Z" fill="#a674d1"/>
+          </g>
+          <g id="acc-star" class="accessory" style="display:none">
+            <path d="M150,26 L155,38 L168,38 L157,46 L161,59 L150,51 L139,59 L143,46 L132,38 L145,38 Z" fill="var(--gold)" stroke="#e8a93c" stroke-width="1.5"/>
+          </g>
+          <g id="acc-flower" class="accessory" style="display:none">
+            <circle cx="132" cy="40" r="8" fill="#ff9dc4"/>
+            <circle cx="146" cy="32" r="8" fill="#ffc4de"/>
+            <circle cx="162" cy="34" r="8" fill="#ff9dc4"/>
+            <circle cx="172" cy="46" r="8" fill="#ffc4de"/>
+            <circle cx="152" cy="40" r="6" fill="var(--gold)"/>
+          </g>
+          <g id="acc-crown" class="accessory" style="display:none">
+            <path d="M122,42 L132,20 L145,36 L150,18 L155,36 L168,20 L178,42 Z" fill="var(--gold)" stroke="#e8a93c" stroke-width="1.5"/>
+            <circle cx="132" cy="20" r="3.4" fill="#ff6fae"/>
+            <circle cx="150" cy="16" r="3.4" fill="#7fd8ff"/>
+            <circle cx="168" cy="20" r="3.4" fill="#ff6fae"/>
+          </g>
+
+          <!-- cheeks -->
+          <ellipse cx="115" cy="107" rx="11" ry="7" fill="#ff9dc4" opacity="0.55"/>
+          <ellipse cx="185" cy="107" rx="11" ry="7" fill="#ff9dc4" opacity="0.55"/>
+
+          <!-- eyes open -->
+          <g id="eyesOpen">
+            <g class="eye">
+              <ellipse cx="128" cy="94" rx="12" ry="14" fill="#4a2d3e"/>
+              <circle cx="124" cy="88" r="3.4" fill="#fff"/>
+            </g>
+            <g class="eye eye2">
+              <ellipse cx="172" cy="94" rx="12" ry="14" fill="#4a2d3e"/>
+              <circle cx="168" cy="88" r="3.4" fill="#fff"/>
+            </g>
+          </g>
+          <!-- eyes closed (sleep) -->
+          <g id="eyesClosed">
+            <path d="M117,94 Q128,101 139,94" stroke="#4a2d3e" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+            <path d="M161,94 Q172,101 183,94" stroke="#4a2d3e" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+          </g>
+
+          <!-- nose -->
+          <path d="M144,120 Q150,127 156,120 Q150,116 144,120 Z" fill="#6b4534"/>
+          <!-- mouth -->
+          <path id="mouth" d="M138,128 Q150,137 162,128" stroke="#6b4534" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-row"><span class="stat-icon">🍓</span><div class="bar"><div class="bar-fill hunger" id="hungerBar"></div></div></div>
+      <div class="stat-row"><span class="stat-icon">💖</span><div class="bar"><div class="bar-fill happiness" id="happinessBar"></div></div></div>
+      <div class="stat-row"><span class="stat-icon">⚡</span><div class="bar"><div class="bar-fill energy" id="energyBar"></div></div></div>
+      <div class="stat-row"><span class="stat-icon">🧼</span><div class="bar"><div class="bar-fill clean" id="cleanBar"></div></div></div>
+    </div>
+
+    <div class="nav">
+      <button class="nav-btn" data-action="feed"><span class="emoji">🍽️</span><span>Füttern</span></button>
+      <button class="nav-btn" data-action="play"><span class="emoji">🎮</span><span>Spielen</span></button>
+      <button class="nav-btn" data-action="clean"><span class="emoji">🛁</span><span>Waschen</span></button>
+      <button class="nav-btn" data-action="sleep"><span class="emoji">😴</span><span>Schlafen</span></button>
+      <button class="nav-btn" data-action="shop"><span class="emoji">🎀</span><span>Shop</span></button>
+      <button class="nav-btn hug" data-action="hug"><span class="emoji">🤗</span><span>Umarmen</span></button>
+    </div>
+  </div>
+
+  <!-- Food overlay -->
+  <div class="overlay hidden" id="foodOverlay">
+    <div class="sheet">
+      <div class="sheet-header"><h2>Was möchtest du füttern? 🍽️</h2><button class="close-x" data-close="foodOverlay">✕</button></div>
+      <div class="grid-2">
+        <div class="item-card" data-food="carrot"><div class="em">🥕</div><div class="nm">Karotte</div><div class="sub">gratis</div></div>
+        <div class="item-card" data-food="strawberry"><div class="em">🍓</div><div class="nm">Erdbeere</div><div class="sub">gratis</div></div>
+        <div class="item-card" data-food="clover"><div class="em">🍀</div><div class="nm">Klee</div><div class="sub">gratis</div></div>
+        <div class="item-card" data-food="cupcake"><div class="em">🧁</div><div class="nm">Cupcake</div><div class="sub">5 🪙 · extra Glück</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Play overlay -->
+  <div class="overlay hidden" id="playOverlay">
+    <div class="sheet" style="display:flex; flex-direction:column; height:80%;">
+      <div class="sheet-header"><h2>Herzen sammeln 💕</h2><button class="close-x" data-close="playOverlay">✕</button></div>
+      <div class="game-hud"><span>⏱️ <span id="playTime">15</span>s</span><span>🪙 <span id="playScore">0</span></span></div>
+      <div id="playArea"></div>
+      <div id="playResult" class="hidden">
+        <div class="big">🌟</div>
+        <p id="playResultText" style="font-weight:700;"></p>
+        <button class="primary-btn" data-close="playOverlay">Fertig</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shop overlay -->
+  <div class="overlay hidden" id="shopOverlay">
+    <div class="sheet">
+      <div class="sheet-header"><h2>Kleiner Shop 🎀</h2><button class="close-x" data-close="shopOverlay">✕</button></div>
+      <div class="grid-2" id="shopGrid"></div>
+    </div>
+  </div>
+
+  <!-- Sleep overlay -->
+  <div class="overlay hidden" id="sleepOverlay">
+    <div class="sleep-box">
+      <span class="moon">🌙</span>
+      <div class="zzz">Zzz... dein Reh schläft ein bisschen</div>
+      <div class="stars-twinkle">✦ ✧ ✦</div>
+    </div>
+  </div>
+
+  <!-- Letter overlay -->
+  <div class="overlay hidden" id="letterOverlay">
+    <div class="sheet">
+      <div class="sheet-header"><h2>Ein Brief für dich 💌</h2><button class="close-x" data-close="letterOverlay">✕</button></div>
+      <div id="letterText"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     HIER ANPASSEN: Personalisiere den Brief, bevor du die Datei
+     an deine Freundin schickst. Einfach den Text unten ändern.
+     ========================================================= */
+  var YOUR_NAME = "Deine beste Freundin";
+  var PERSONAL_MESSAGE =
+"Hey du,\n\n" +
+"ich hab dir dieses kleine Reh gebastelt, weil ich möchte, dass du weißt: ich denke an dich. 💕\n\n" +
+"Schau hier vorbei, wann immer du magst. Füttere es, spiel ein bisschen mit ihm, mach es sauber " +
+"oder hol dir einfach eine Umarmung ab, wenn dir gerade nicht nach viel ist.\n\n" +
+"Ich hab dich sehr lieb und bin für dich da, egal was ist.\n\n" +
+"– " + YOUR_NAME;
+  /* ========================================================= */
+
+  var HUG_MESSAGES = [
+    "Ich hab dich sehr lieb 💕",
+    "Du bist wundervoll, so wie du bist.",
+    "Schön, dass es dich gibt 🌸",
+    "Egal was ist – ich bin für dich da.",
+    "Kleine Pause gefällig? Du machst das großartig.",
+    "Du darfst auch einfach mal nichts schaffen müssen.",
+    "Ich bin stolz auf dich.",
+    "Ganz tief durchatmen – du schaffst das.",
+    "Ein Tag nach dem anderen 🍀",
+    "Du bedeutest mir wirklich viel.",
+    "Denk dran: du bist nicht allein.",
+    "Ich schick dir ganz feste virtuelle Umarmungen 🤗"
+  ];
+
+  var SPEECH_IDLE = [
+    "*schnuppert neugierig*",
+    "Hallo! 🌼",
+    "*wackelt mit den Ohren*",
+    "Schön, dass du da bist.",
+    "*kuschelt sich ein*"
+  ];
+
+  var hasStorage = (typeof window !== "undefined" && typeof window.storage !== "undefined");
+  var STORAGE_KEY = "kleines-reh-state-v1";
+
+  var state = {
+    petName: "Rehli",
+    level: 1,
+    xp: 0,
+    coins: 15,
+    hunger: 82,
+    happiness: 82,
+    energy: 82,
+    clean: 88,
+    equipped: "acc-bow-pink",
+    owned: ["acc-bow-pink"]
+  };
+
+  var SHOP_ITEMS = [
+    { id: "acc-bow-pink",   name: "Rosa Schleife",  emoji: "🎀", price: 0 },
+    { id: "acc-bow-purple", name: "Lila Schleife",  emoji: "🎀", price: 10 },
+    { id: "acc-star",       name: "Sternchen-Clip", emoji: "⭐", price: 12 },
+    { id: "acc-flower",     name: "Blumenkranz",    emoji: "🌸", price: 18 },
+    { id: "acc-crown",      name: "Goldkrone",      emoji: "👑", price: 25 }
+  ];
+
+  var FOODS = {
+    carrot:     { emoji:"🥕", hunger:15, happy:2,  cost:0 },
+    strawberry: { emoji:"🍓", hunger:20, happy:8,  cost:0 },
+    clover:     { emoji:"🍀", hunger:10, happy:1,  cost:0 },
+    cupcake:    { emoji:"🧁", hunger:30, happy:15, cost:5 }
+  };
+
+  var el = {};
+  ["onboardingScreen","gameScreen","petNameInput","startBtn","coinCount","levelCount",
+   "stage","speechBubble","dirtLayer","deerSvg","mouth","eyesOpen","eyesClosed",
+   "hungerBar","happinessBar","energyBar","cleanBar",
+   "foodOverlay","playOverlay","shopOverlay","sleepOverlay","letterOverlay",
+   "playArea","playTime","playScore","playResult","playResultText","shopGrid","letterBtn","letterText"
+  ].forEach(function(id){ el[id] = document.getElementById(id); });
+
+  function clamp(v){ return Math.max(0, Math.min(100, Math.round(v))); }
+
+  function qs(sel, root){ return (root||document).querySelector(sel); }
+  function qsa(sel, root){ return Array.prototype.slice.call((root||document).querySelectorAll(sel)); }
+
+  /* ---------- persistence ---------- */
+  function loadState(){
+    return new Promise(function(resolve){
+      if(!hasStorage){ resolve(); return; }
+      window.storage.get(STORAGE_KEY).then(function(res){
+        if(res && res.value){
+          try{
+            var saved = JSON.parse(res.value);
+            Object.keys(saved).forEach(function(k){ state[k] = saved[k]; });
+          }catch(e){}
+        }
+        resolve();
+      }).catch(function(){ resolve(); });
+    });
+  }
+  function saveState(){
+    if(!hasStorage) return;
+    try{
+      window.storage.set(STORAGE_KEY, JSON.stringify(state)).catch(function(){});
+    }catch(e){}
+  }
+
+  /* ---------- rendering ---------- */
+  function renderTop(){
+    el.coinCount.textContent = state.coins;
+    el.levelCount.textContent = state.level;
+  }
+  function renderBars(){
+    el.hungerBar.style.width = state.hunger + "%";
+    el.happinessBar.style.width = state.happiness + "%";
+    el.energyBar.style.width = state.energy + "%";
+    el.cleanBar.style.width = state.clean + "%";
+  }
+  function renderAccessory(){
+    qsa(".accessory").forEach(function(g){ g.style.display = "none"; });
+    var g = document.getElementById(state.equipped);
+    if(g) g.style.display = "";
+  }
+  function renderMood(){
+    var sleeping = el.stage.classList.contains("is-sleeping");
+    if(sleeping){
+      el.eyesOpen.classList.add("sleeping");
+      el.eyesClosed.classList.add("sleeping");
+      el.mouth.setAttribute("d","M142,130 Q150,133 158,130");
+      return;
+    } else {
+      el.eyesOpen.classList.remove("sleeping");
+      el.eyesClosed.classList.remove("sleeping");
+    }
+    if(state.hunger < 25 || state.clean < 25){
+      el.mouth.setAttribute("d","M139,133 Q150,124 161,133"); // sad
+    } else if(state.happiness > 70){
+      el.mouth.setAttribute("d","M136,127 Q150,142 164,127"); // big smile
+    } else {
+      el.mouth.setAttribute("d","M138,128 Q150,137 162,128"); // normal smile
+    }
+  }
+  function renderAll(){ renderTop(); renderBars(); renderAccessory(); renderMood(); }
+
+  /* ---------- speech bubble ---------- */
+  var bubbleTimer = null;
+  function say(text, duration){
+    el.speechBubble.textContent = text;
+    el.speechBubble.classList.add("show");
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(function(){
+      el.speechBubble.classList.remove("show");
+    }, duration || 2600);
+  }
+
+  function floatingText(text, colorClass){
+    var t = document.createElement("div");
+    t.className = "float-text";
+    t.textContent = text;
+    t.style.left = (44 + Math.random()*20) + "%";
+    t.style.top = "38%";
+    el.stage.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 1000);
+  }
+  function heartPop(){
+    for(var i=0;i<5;i++){
+      (function(i){
+        setTimeout(function(){
+          var h = document.createElement("div");
+          h.className = "heart-pop";
+          h.textContent = ["💖","💕","✨","💗"][Math.floor(Math.random()*4)];
+          h.style.left = (30 + Math.random()*40) + "%";
+          h.style.top = "34%";
+          el.stage.appendChild(h);
+          setTimeout(function(){ h.remove(); }, 1100);
+        }, i*110);
+      })(i);
+    }
+  }
+  function jumpDeer(){
+    el.deerSvg.classList.remove("jump");
+    void el.deerSvg.offsetWidth;
+    el.deerSvg.classList.add("jump");
+  }
+  function squishDeer(){
+    el.deerSvg.classList.remove("tap-squish");
+    void el.deerSvg.offsetWidth;
+    el.deerSvg.classList.add("tap-squish");
+  }
+
+  /* ---------- dirt ---------- */
+  function spawnDirt(){
+    if(qsa(".dirt-spot", el.dirtLayer).length >= 4) return;
+    var spot = document.createElement("div");
+    spot.className = "dirt-spot";
+    var x = 34 + Math.random()*32;
+    var y = 46 + Math.random()*26;
+    spot.style.left = x + "%";
+    spot.style.top = y + "%";
+    spot.addEventListener("click", function(){
+      spot.classList.add("gone");
+      setTimeout(function(){ spot.remove(); }, 200);
+      state.clean = clamp(state.clean + 14);
+      renderBars();
+      if(qsa(".dirt-spot", el.dirtLayer).length <= 1){
+        say("Blitzeblank! ✨ Danke fürs Waschen.");
+        state.happiness = clamp(state.happiness + 5);
+        renderBars();
+      }
+      saveState();
+    });
+    el.dirtLayer.appendChild(spot);
+  }
+
+  function addXp(n){
+    state.xp += n;
+    var need = state.level * 40;
+    if(state.xp >= need){
+      state.xp -= need;
+      state.level += 1;
+      say("Level " + state.level + "! " + state.petName + " ist gewachsen 🌟", 3000);
+      renderTop();
+    }
+  }
+
+  /* ---------- decay loop ---------- */
+  function tick(){
+    if(el.stage.classList.contains("is-sleeping")) return;
+    state.hunger = clamp(state.hunger - (2 + Math.random()*2));
+    state.energy = clamp(state.energy - (1 + Math.random()*1.5));
+    if(Math.random() < 0.5) state.clean = clamp(state.clean - (2 + Math.random()*3));
+    state.happiness = clamp((state.hunger*0.4 + state.energy*0.25 + state.clean*0.35));
+
+    if(state.clean < 65 && Math.random() < 0.35) spawnDirt();
+
+    renderBars();
+    renderMood();
+    saveState();
+
+    if(state.hunger < 25 && Math.random() < 0.5) say("*Bäuchlein knurrt* 🥕");
+    else if(state.energy < 20 && Math.random() < 0.5) say("*gähnt* 😴");
+    else if(Math.random() < 0.12) say(SPEECH_IDLE[Math.floor(Math.random()*SPEECH_IDLE.length)], 2000);
+  }
+
+  /* ---------- overlays ---------- */
+  function open(id){ document.getElementById(id).classList.remove("hidden"); }
+  function close(id){ document.getElementById(id).classList.add("hidden"); }
+
+  document.addEventListener("click", function(e){
+    var closeId = e.target.getAttribute && e.target.getAttribute("data-close");
+    if(closeId) close(closeId);
+  });
+
+  /* ---------- feed ---------- */
+  qsa("[data-food]").forEach(function(card){
+    card.addEventListener("click", function(){
+      var key = card.getAttribute("data-food");
+      var food = FOODS[key];
+      if(food.cost > state.coins){
+        say("Noch nicht genug Münzen – sammle welche beim Spielen! 🎮", 2600);
+        return;
+      }
+      state.coins -= food.cost;
+      state.hunger = clamp(state.hunger + food.hunger);
+      state.happiness = clamp(state.happiness + food.happy);
+      addXp(4);
+      renderAll();
+      jumpDeer();
+      floatingText("+" + food.hunger + " 🍓");
+      say("Mmmh, lecker " + food.emoji, 1800);
+      saveState();
+    });
+  });
+
+  qs('[data-action="feed"]').addEventListener("click", function(){ open("foodOverlay"); });
+
+  /* ---------- clean ---------- */
+  qs('[data-action="clean"]').addEventListener("click", function(){
+    if(qsa(".dirt-spot", el.dirtLayer).length === 0){
+      say("Ich bin schon ganz sauber! ✨", 2200);
+    } else {
+      say("Wisch die Flecken einfach weg 🧽", 2400);
+    }
+  });
+
+  /* ---------- sleep ---------- */
+  qs('[data-action="sleep"]').addEventListener("click", function(){
+    el.stage.classList.add("is-sleeping");
+    renderMood();
+    open("sleepOverlay");
+    var start = state.energy;
+    var dur = 3200;
+    var t0 = Date.now();
+    var iv = setInterval(function(){
+      var p = Math.min(1, (Date.now()-t0)/dur);
+      state.energy = clamp(start + p*(100-start));
+      renderBars();
+      if(p >= 1){
+        clearInterval(iv);
+        setTimeout(function(){
+          close("sleepOverlay");
+          el.stage.classList.remove("is-sleeping");
+          state.happiness = clamp(state.happiness + 6);
+          renderAll();
+          say("Ahh, das tat gut! Guten Morgen 😊", 2600);
+          saveState();
+        }, 300);
+      }
+    }, 90);
+  });
+
+  /* ---------- hug ---------- */
+  qs('[data-action="hug"]').addEventListener("click", function(){
+    heartPop();
+    jumpDeer();
+    state.happiness = clamp(state.happiness + 4);
+    addXp(2);
+    renderBars();
+    say(HUG_MESSAGES[Math.floor(Math.random()*HUG_MESSAGES.length)], 3200);
+    saveState();
+  });
+
+  /* ---------- shop ---------- */
+  function renderShop(){
+    el.shopGrid.innerHTML = "";
+    SHOP_ITEMS.forEach(function(item){
+      var owned = state.owned.indexOf(item.id) !== -1;
+      var equipped = state.equipped === item.id;
+      var card = document.createElement("div");
+      card.className = "item-card" + (equipped ? " equipped" : "");
+      var btnHtml;
+      if(equipped){
+        btnHtml = '<button class="mini-btn locked">Angezogen</button>';
+      } else if(owned){
+        btnHtml = '<button class="mini-btn ghost" data-equip="'+item.id+'">Anziehen</button>';
+      } else {
+        btnHtml = '<button class="mini-btn" data-buy="'+item.id+'">Kaufen · '+item.price+' 🪙</button>';
+      }
+      card.innerHTML =
+        '<div class="em">'+item.emoji+'</div>' +
+        '<div class="nm">'+item.name+'</div>' +
+        btnHtml;
+      el.shopGrid.appendChild(card);
+    });
+    qsa("[data-buy]").forEach(function(btn){
+      btn.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        var id = btn.getAttribute("data-buy");
+        var item = SHOP_ITEMS.filter(function(i){ return i.id === id; })[0];
+        if(state.coins < item.price){
+          say("Noch " + (item.price - state.coins) + " Münzen bis dahin! 🪙", 2400);
+          return;
+        }
+        state.coins -= item.price;
+        state.owned.push(id);
+        state.equipped = id;
+        renderTop(); renderAccessory(); renderShop();
+        say(state.petName + " trägt jetzt " + item.name + "! " + item.emoji, 2400);
+        saveState();
+      });
+    });
+    qsa("[data-equip]").forEach(function(btn){
+      btn.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        state.equipped = btn.getAttribute("data-equip");
+        renderAccessory(); renderShop(); saveState();
+      });
+    });
+  }
+  qs('[data-action="shop"]').addEventListener("click", function(){ renderShop(); open("shopOverlay"); });
+
+  /* ---------- letter ---------- */
+  el.letterText.textContent = PERSONAL_MESSAGE;
+  el.letterBtn.addEventListener("click", function(){ open("letterOverlay"); });
+
+  /* ---------- play minigame ---------- */
+  var playInterval = null, playSpawner = null, playScore = 0, playSeconds = 15;
+  qs('[data-action="play"]').addEventListener("click", function(){
+    playScore = 0; playSeconds = 15;
+    el.playScore.textContent = "0";
+    el.playTime.textContent = playSeconds;
+    el.playArea.innerHTML = "";
+    el.playResult.classList.add("hidden");
+    open("playOverlay");
+
+    playSpawner = setInterval(spawnFallItem, 650);
+    playInterval = setInterval(function(){
+      playSeconds -= 1;
+      el.playTime.textContent = playSeconds;
+      if(playSeconds <= 0) endPlay();
+    }, 1000);
+  });
+
+  function spawnFallItem(){
+    var area = el.playArea;
+    var w = area.clientWidth || 260;
+    var h = area.clientHeight || 300;
+    var item = document.createElement("div");
+    item.className = "fall-item";
+    item.textContent = Math.random() < 0.75 ? "💖" : "⭐";
+    var left = 10 + Math.random() * (w - 40);
+    item.style.left = left + "px";
+    area.appendChild(item);
+
+    var top = -30;
+    var speed = 1.6 + Math.random()*1.2;
+    var raf;
+    function step(){
+      top += speed;
+      item.style.top = top + "px";
+      if(top > h){ item.remove(); return; }
+      if(item.parentNode) raf = requestAnimationFrame(step);
+    }
+    raf = requestAnimationFrame(step);
+
+    item.addEventListener("click", function(){
+      if(item.classList.contains("caught")) return;
+      item.classList.add("caught");
+      playScore += 1;
+      state.coins += 1;
+      state.happiness = clamp(state.happiness + 1);
+      el.playScore.textContent = playScore;
+      renderTop();
+      setTimeout(function(){ item.remove(); }, 280);
+    });
+  }
+
+  function endPlay(){
+    clearInterval(playInterval);
+    clearInterval(playSpawner);
+    playInterval = null; playSpawner = null;
+    qsa(".fall-item", el.playArea).forEach(function(n){ n.remove(); });
+    addXp(playScore * 2);
+    saveState();
+    renderBars();
+    el.playResult.classList.remove("hidden");
+    el.playResultText.textContent = playScore + " Herzen gesammelt – klasse gemacht! Du hast " + playScore + " 🪙 verdient.";
+  }
+
+  /* ---------- onboarding ---------- */
+  el.startBtn.addEventListener("click", function(){
+    var name = el.petNameInput.value.trim();
+    if(name) state.petName = name;
+    el.onboardingScreen.classList.add("hidden");
+    el.gameScreen.classList.remove("hidden");
+    renderAll();
+    say("Hallo! Ich bin " + state.petName + " 💕", 3200);
+    saveState();
+  });
+
+  /* ---------- ambient background hearts ---------- */
+  function initDecor(){
+    var symbols = ["💗","✨","🌸","💕","⭐"];
+    for(var i=0;i<9;i++){
+      var s = document.createElement("div");
+      s.className = "floaty";
+      s.textContent = symbols[i % symbols.length];
+      s.style.left = (Math.random()*94) + "%";
+      s.style.animationDuration = (9 + Math.random()*9) + "s";
+      s.style.animationDelay = (Math.random()*10) + "s";
+      s.style.fontSize = (14 + Math.random()*14) + "px";
+      document.getElementById("bgDecor").appendChild(s);
+    }
+  }
+
+  /* ---------- tap deer ---------- */
+  el.deerWrap ? null : null;
+  document.getElementById("deerWrap").addEventListener("click", function(){
+    squishDeer();
+    if(Math.random() < 0.4) say(SPEECH_IDLE[Math.floor(Math.random()*SPEECH_IDLE.length)], 1800);
+  });
+
+  /* ---------- init ---------- */
+  function init(){
+    initDecor();
+    loadState().then(function(){
+      if(el.gameScreen && state.petName && hasStorage){
+        // if we had saved progress, skip onboarding
+      }
+      renderAll();
+      setInterval(tick, 6000);
+    });
+  }
+  init();
+
+})();
+</script>
+</body>
+</html>
